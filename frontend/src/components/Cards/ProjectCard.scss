@@ -1,0 +1,178 @@
+@import '../../styles/variables';
+
+.project-card {
+  /* --- Стили “как у .card” --- */
+  border-radius: $border-radius-lg;    // большее скругление
+  box-shadow: $shadow-sm;              // лёгкая тень
+  background-color: $color-gray;       // фон всей карточки
+  transition: transform 0.3s ease,     // сохраняем вашу анимацию подъёма
+              box-shadow 0.3s ease;    // + тень при ховере
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: $shadow-md;            // тень поглубже на ховере
+  }
+
+  /* --- Ваши внутренние стили оставил без изменений --- */
+  display: flex;
+  align-items: center;
+  padding: $spacing-md;
+  flex-direction: row;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  /* убрал border: 2px solid $color-gray, чтобы тень была вместо рамки */
+
+  &__content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  &__title,
+  &__description {
+    display: inline-block;
+    align-self: flex-start;
+    background-color: inherit;
+    padding: $spacing-extra-sm $spacing-extra-sm;
+    border-radius: $border-radius-sm;
+  }
+
+  &__link {
+    display: inline-block;
+    padding: $spacing-sm $spacing-md;
+    border-radius: $border-radius-sm;
+    font-weight: $font-weight-bold;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    text-align: center;
+  }
+
+  &__image-container {
+    flex-shrink: 0;
+    margin-left: $spacing-lg;
+    width: 120px;
+    height: 120px;
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+  }
+
+  &:hover &__image {
+    transform: scale(1.05);
+  }
+
+  // Типы карточек
+  &--project1 {
+    background-color: $color-gray;
+
+    .project-card__title,
+    .project-card__description {
+      background-color: $color-accent;
+    }
+
+    .project-card__link {
+      background-color: $color-accent;
+      color: $color-black;
+
+      &:hover {
+        background-color: darken($color-accent, 20%);
+      }
+    }
+  }
+
+  &--project2 {
+    background-color: $color-accent;
+
+    .project-card__title,
+    .project-card__description {
+      background-color: $color-light;
+    }
+
+    .project-card__link {
+      background-color: $color-black;
+      color: $color-accent;
+
+      &:hover {
+        background-color: lighten($color-black, 20%);
+      }
+    }
+  }
+
+  &--project3 {
+    background-color: $color-black;
+
+    .project-card__title,
+    .project-card__description {
+      background-color: $color-light;
+    }
+
+    .project-card__link {
+      background-color: $color-light;
+      color: $color-black;
+
+      &:hover {
+        background-color: darken($color-light, 20%);
+      }
+    }
+  }
+
+  &--project4 {
+    background-color: $color-gray;
+
+    .project-card__title,
+    .project-card__description {
+      background-color: $color-accent;
+    }
+
+    .project-card__link {
+      background-color: $color-accent;
+      color: $color-black;
+
+      &:hover {
+        background-color: darken($color-accent, 20%);
+      }
+    }
+  }
+
+  &--project5 {
+    background-color: $color-accent;
+
+    .project-card__title,
+    .project-card__description {
+      background-color: $color-light;
+    }
+
+    .project-card__link {
+      background-color: $color-black;
+      color: $color-accent;
+
+      &:hover {
+        background-color: lighten($color-black, 20%);
+      }
+    }
+  }
+
+  &--project6 {
+    background-color: $color-black;
+
+    .project-card__title,
+    .project-card__description {
+      background-color: $color-light;
+    }
+
+    .project-card__link {
+      background-color: $color-light;
+      color: $color-black;
+
+      &:hover {
+        background-color: darken($color-light, 20%);
+      }
+    }
+  }
+}
