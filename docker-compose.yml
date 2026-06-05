@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend  # Путь к Dockerfile для сервера Django
+    container_name: backend
+    environment:
+      - POSTGRES_DB=project_db
+      - POSTGRES_USER=postgres_user
+      - POSTGRES_PASSWORD=postgres_password
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - REDIS_URL=redis://redis:6379/1  # Указан адрес Redis
+      - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0  # Добавлено ALLOWED_HOSTS для Django
+    ports:
+      - "8000:8000"  # Проброс порта 8000 контейнера на 8000 хоста
+    depends_on:
+      - postgres  # Зависит от сервиса PostgreSQL
+      - redis     # Зависит от сервиса Redis
+    volumes:
+      - ./backend:/app  # Привязка директории с кодом к контейнеру
+    networks:
+      - app_network  # Сетевой мост для взаимодействия с другими контейнерами
+    command: sh -c "python manage.py makemigrations --noinput && python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8000"
+
+  frontend:
+    build: ./frontend  # Путь к Dockerfile для фронтенда
+    container_name: frontend
+    environment:
+      - REACT_APP_API_URL=http://backend:8000  # Адрес API сервера (обращаемся к контейнеру backend)
+    ports:
+      - "3000:3000"  # Проброс порта 3000 контейнера на 3000 хоста
+    depends_on:
+      - backend  # Зависит от сервиса backend
+    volumes:
+      - ./frontend:/app  # Привязка директории с кодом к контейнеру
+    networks:
+      - app_network  # Сетевой мост для взаимодействия с другими контейнерами
+    command: sh -c "npm install && npm start"  # Установка зависимостей и запуск фронтенда
+
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_DB: project_db
+      POSTGRES_USER: postgres_user
+      POSTGRES_PASSWORD: postgres_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - app_network
+    command: ["redis-server", "--appendonly", "yes"]  # Включаем сохранение данных Redis в файл
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./frontend/build:/usr/share/nginx/html
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - app_network
+
+volumes:
+  postgres_data:
+
+networks:
+  app_network:
+    driver: bridge
